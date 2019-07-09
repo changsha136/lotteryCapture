@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd 
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.1.xsd">
+
+	<!-- ANNOTATION CONFIG -->
+	<context:annotation-config />
+
+	<!-- SCAN PACKAGE -->
+	<context:component-scan base-package="javautils.*" />
+	<context:component-scan base-package="lottery.*" />
+
+	<!-- ASPECTJ AUTOPROXY -->
+	<aop:aspectj-autoproxy />
+
+	<!-- PROPERTIES -->
+	<bean id="propertyConfigurer"
+		class="javautils.spring.EncryptPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:config/datasource/db.properties</value>
+				<value>classpath:config/datasource/redis.properties</value>
+				<value>classpath:config/hibernate/hibernate.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Redis -->
+	<bean id="jedisTemplate" class="javautils.redis.JedisTemplate">
+		<constructor-arg index="0" ref="jedisDirectPool"/>
+	</bean>
+
+	<bean id="jedisConnectionInfo" class="javautils.redis.pool.ConnectionInfo">
+		<property name="database" value="${redis.database}"></property>
+		<property name="password" value="${redis.pass}"></property>
+		<property name="timeout" value="${redis.timeout}"></property>
+	</bean>
+
+	<bean id="jedisDirectPool" class="javautils.redis.pool.JedisDirectPool">
+		<constructor-arg index="0" ref="jedisHostAndPort"/>
+		<constructor-arg index="1" ref="jedisConnectionInfo" />
+		<constructor-arg index="2" ref="jedisPoolConfig" />
+	</bean>
+
+	<bean id="jedisHostAndPort" class="redis.clients.jedis.HostAndPort">
+		<constructor-arg index="0" value="${redis.host}"/>
+		<constructor-arg index="1" value="${redis.port}" />
+	</bean>
+
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="500" />
+		<property name="maxIdle" value="500" />
+	</bean>
+	<!-- Redis -->
+
+	<!-- druid配置 -->
+	<bean id="log4jFilter" class="com.alibaba.druid.filter.logging.Log4jFilter">
+		<property name="statementExecuteQueryAfterLogEnabled" value="false"/>
+		<property name="statementExecuteUpdateAfterLogEnabled" value="false"/>
+		<property name="statementExecuteBatchAfterLogEnabled" value="false"/>
+		<property name="statementExecuteAfterLogEnabled" value="false"/>
+		<property name="statementExecutableSqlLogEnable" value="true"/> <!-- 日志输出可执行的SQL -->
+		<property name="statementParameterSetLogEnabled" value="false"/>
+		<property name="statementParameterClearLogEnable" value="false"/>
+		<property name="statementCreateAfterLogEnabled" value="false"/>
+		<property name="statementCloseAfterLogEnabled" value="false"/>
+		<property name="statementPrepareAfterLogEnabled" value="false"/>
+		<property name="statementPrepareCallAfterLogEnabled" value="false"/>
+		<property name="statementLogEnabled" value="false"/>
+		<property name="statementLogErrorEnabled" value="false"/>
+	</bean>
+	<bean id="statFilter" class="com.alibaba.druid.filter.stat.StatFilter">
+		<property name="slowSqlMillis" value="1000"/> <!-- 执行时间超过1秒都被定义为慢sql -->
+		<property name="logSlowSql" value="true"/>
+		<property name="mergeSql" value="true"/>
+	</bean>
+	<bean id="writeWallConfig" class="com.alibaba.druid.wall.WallConfig" init-method="init">
+		<!-- 指定配置装载的目录  -->
+		<property name="dir" value="META-INF/druid/wall/mysql" />
+		<property name="truncateAllow" value="false"/> <!--是否允许执行truncate语句-->
+		<property name="alterTableAllow" value="false"/> <!--是否允许修改表-->
+		<property name="dropTableAllow" value="false"/> <!--是否允许删除表-->
+		<property name="commentAllow" value="false"/> <!--是否允许存在注释-->
+		<property name="describeAllow" value="false"/> <!--是否允许存在describe语句 -->
+		<property name="showAllow" value="false"/> <!--是否允许存在show语句 -->
+		<property name="deleteWhereNoneCheck" value="true"/> <!--检查DELETE语句是否无where条件 -->
+		<property name="updateWhereNoneCheck" value="true"/> <!--检查UPDATE语句是否无where条件 -->
+		<property name="selectIntoOutfileAllow" value="false"/> <!--SELECT ... INTO OUTFILE 是否允许，这个是mysql注入攻击的常见手段，缺省是禁止的 -->
+		<property name="strictSyntaxCheck" value="false"/> <!--是否进行严格的语法检测，Druid SQL Parser在某些场景不能覆盖所有的SQL语法，出现解析SQL出错，可以临时把这个选项设置为false -->
+	</bean>
+	<bean id="readWallConfig" class="com.alibaba.druid.wall.WallConfig" init-method="init">
+		<!-- 指定配置装载的目录  -->
+		<property name="dir" value="META-INF/druid/wall/mysql" />
+		<property name="selectIntoAllow" value="false"/> <!--SELECT查询中是否允许INTO字句-->
+		<property name="deleteAllow" value="false"/> <!--是否允许执行DELETE语句-->
+		<property name="updateAllow" value="false"/> <!--是否允许执行UPDATE语句-->
+		<property name="insertAllow" value="false"/> <!--是否允许执行INSERT语句-->
+		<property name="replaceAllow" value="false"/> <!--是否允许执行REPLACE语句-->
+		<property name="mergeAllow" value="false"/> <!--是否允许执行MERGE语句，这个只在Oracle中有用-->
+		<property name="truncateAllow" value="false"/> <!--是否允许执行truncate语句-->
+		<property name="alterTableAllow" value="false"/> <!--是否允许修改表-->
+		<property name="dropTableAllow" value="false"/> <!--是否允许删除表-->
+		<property name="commentAllow" value="false"/> <!--是否允许存在注释-->
+		<property name="describeAllow" value="false"/> <!--是否允许存在describe语句 -->
+		<property name="showAllow" value="false"/> <!--是否允许存在show语句 -->
+		<property name="deleteWhereNoneCheck" value="true"/> <!--检查DELETE语句是否无where条件 -->
+		<property name="updateWhereNoneCheck" value="true"/> <!--检查UPDATE语句是否无where条件 -->
+		<property name="selectIntoOutfileAllow" value="false"/> <!--SELECT ... INTO OUTFILE 是否允许，这个是mysql注入攻击的常见手段，缺省是禁止的 -->
+		<property name="strictSyntaxCheck" value="false"/> <!--是否进行严格的语法检测，Druid SQL Parser在某些场景不能覆盖所有的SQL语法，出现解析SQL出错，可以临时把这个选项设置为false -->
+	</bean>
+
+	<bean id="writeWallFilter" class="com.alibaba.druid.wall.WallFilter">
+		<property name="dbType" value="mysql" />
+		<property name="logViolation" value="true"/>
+		<property name="throwException" value="false"/>
+		<property name="config" ref="writeWallConfig" />
+	</bean>
+	<bean id="readWallFilter" class="com.alibaba.druid.wall.WallFilter">
+		<property name="dbType" value="mysql" />
+		<property name="logViolation" value="true"/>
+		<property name="throwException" value="false"/>
+		<property name="config" ref="readWallConfig" />
+	</bean>
+	<!-- druid配置 -->
+
+	<!-- 主库 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="url" value="${jdbc.master.url}" />
+		<property name="username" value="${jdbc.master.username}" />
+		<property name="password" value="${jdbc.master.password}" />
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="50" />
+		<property name="maxWait" value="60000" />
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="timeBetweenLogStatsMillis" value="86400000"/> <!-- 每24小时输出统计日志到文件 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="poolPreparedStatements" value="true"/>
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="50"/>
+		<property name="filters" value="config" />
+		<property name="proxyFilters">
+			<list>
+				<ref bean="log4jFilter"/>
+				<ref bean="statFilter"/>
+				<!--<ref bean="writeWallFilter"/>-->
+			</list>
+		</property>
+		<property name="connectionProperties" value="config.decrypt=true;config.decrypt.key=${jdbc.master.publicKey}"/>
+	</bean>
+
+	<!-- SESSION FACTORY -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>javautils.*</value>
+				<value>lottery.*</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cacle">${hibernate.cache.use_second_level_cacle}</prop>
+				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- DATASOURCE TRANSACTION MANAGER -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- TX -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- SCHEDULER -->
+	<task:scheduler id="scheduler" pool-size="200" />
+
+	<!-- TASK -->
+	<task:annotation-driven scheduler="scheduler" />
+
+</beans>

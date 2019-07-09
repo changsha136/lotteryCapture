@@ -1,0 +1,14 @@
+jdbc.master.url=jdbc:mysql://123.56.19.120:3306/ecai?useUnicode=true&characterEncoding=utf-8
+jdbc.master.username=root
+jdbc.master.password=oRASJNm7t2a1ZCuuhZOGQi5FdzuhpJzehhn/NRxJWH3L8m9y4JBf0SCfsgjwkuWDSx7JaJymUdSuN/dfLkcOhQ==
+jdbc.master.publicKey=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKRIbX5eqh1PFvFosm0QtXQH7DgaO5DgzJLce2v94GFsR3ET+RWIuqHhHnkRnomvlxku09nvnEZztG35K8FACi8CAwEAAQ==
+
+jdbc.slave.url=jdbc:mysql://123.56.19.120:3306/ecai?useUnicode=true&characterEncoding=utf-8
+jdbc.slave.username=root
+jdbc.slave.password=oRASJNm7t2a1ZCuuhZOGQi5FdzuhpJzehhn/NRxJWH3L8m9y4JBf0SCfsgjwkuWDSx7JaJymUdSuN/dfLkcOhQ==
+jdbc.slave.publicKey=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKRIbX5eqh1PFvFosm0QtXQH7DgaO5DgzJLce2v94GFsR3ET+RWIuqHhHnkRnomvlxku09nvnEZztG35K8FACi8CAwEAAQ==
+
+auto_load_jdbc.url=jdbc:mysql://123.56.19.120:3306/ecai?useUnicode=true&characterEncoding=utf-8
+auto_load_jdbc.username=root
+auto_load_jdbc.password=oRASJNm7t2a1ZCuuhZOGQi5FdzuhpJzehhn/NRxJWH3L8m9y4JBf0SCfsgjwkuWDSx7JaJymUdSuN/dfLkcOhQ==
+auto_load_jdbc.publicKey=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKRIbX5eqh1PFvFosm0QtXQH7DgaO5DgzJLce2v94GFsR3ET+RWIuqHhHnkRnomvlxku09nvnEZztG35K8FACi8CAwEAAQ==

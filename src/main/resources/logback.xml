@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- 典型的日志pattern -->
+		<encoder>
+			<pattern>[%date{HH:mm:ss} %5level %logger{0}.%M:%L] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 按时间滚动的策略 -->
+	<appender name="defaultLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/usr/local/tomcat/logs/LotteryCapture/capture.log</file>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/usr/local/tomcat/logs/LotteryCapture/capture.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!-- 保留 10天数据，默认无限-->
+			<maxHistory>10</maxHistory>
+		</rollingPolicy>
+		
+		<encoder>
+			<pattern>[%date{HH:mm:ss} %5level %logger{0}.%M:%L] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 按时间滚动的策略 -->
+	<appender name="sqlLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/usr/local/tomcat/logs/LotteryCapture/sql.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/usr/local/tomcat/logs/LotteryCapture/sql.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!-- 保留 10天数据，默认无限-->
+			<maxHistory>10</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>[%date{HH:mm:ss} %5level %logger{0}.%M:%L] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 按时间滚动的策略 -->
+	<appender name="sqlStatLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/usr/local/tomcat/logs/LotteryCapture/sqlstat.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/usr/local/tomcat/logs/LotteryCapture/sqlstat.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!-- 保留 20天数据，默认无限-->
+			<maxHistory>20</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>[%date{HH:mm:ss} %5level %logger{0}.%M:%L] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- project default level -->
+	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL, OFF -->
+	<logger name="lottery" level="DEBUG" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="defaultLogFile" />
+	</logger>
+	<logger name="druid" level="WARN" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="sqlLogFile" />
+	</logger>
+	<!-- 慢sql日志 -->
+	<logger name="com.alibaba.druid.filter.stat.StatFilter" level="WARN" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="sqlLogFile" />
+	</logger>
+	<!-- 监控统计 -->
+	<logger name="com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl" level="WARN" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="sqlStatLogFile" />
+	</logger>
+
+	<!-- root -->
+	<root level="WARN">
+		<appender-ref ref="console" />
+		<appender-ref ref="defaultLogFile" />
+	</root>
+</configuration>
