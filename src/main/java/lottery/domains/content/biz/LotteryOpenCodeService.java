@@ -21,5 +21,6 @@ public interface LotteryOpenCodeService {
      */
     boolean add(LotteryOpenCode entity, boolean txffcAssistLast);
 
+
     LotteryOpenCode get(String lottery, String expect);
 }
