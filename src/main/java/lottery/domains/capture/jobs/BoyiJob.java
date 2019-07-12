@@ -1,9 +1,7 @@
 package lottery.domains.capture.jobs;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import javautils.date.Moment;
 import javautils.http.HttpClientUtil;
 import lottery.domains.capture.sites.b1cp.BoyiBean;
@@ -18,9 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.util.*;
-
 /**
  * 博易，主要用来获取幸运飞艇数据，但当前期不获取，当前期以PCQQJob为准
  * 在http://www.jiangyuan365.com注册账号后获取token
@@ -35,7 +31,6 @@ public class BoyiJob {
 	private static final String URLBEFORE = "http://api.b1api.com/api?p=json&t=";
 	private static final String URLAFTER = "&limit=20&token=" + TOKEN;
 //	private static final String URLAFTER = "http://api.b1api.com/api?p=json&t=xyft&limit=20&token=" + TOKEN;
-//	http://api.b1api.com/api?p=json&t=xyft&limit=1&token=AAE3BA1FEE691C85
 	// 彩票code列表
 	private static final Map<String, String> LOTTERIES = new HashMap<>();
 	static {
@@ -48,7 +43,7 @@ public class BoyiJob {
 	private LotteryOpenCodeService lotteryOpenCodeService;
 
 
-	 @Scheduled(cron = "0/20 * * * * *") 
+	 @Scheduled(cron = "0/20 * * * * *")
 	// @PostConstruct
 	public void execute() {
 		synchronized (BoyiJob.class) {
@@ -123,7 +118,7 @@ public class BoyiJob {
 			}
 			return true;
 		}
-		
+
 		// 如果本期和上奖开奖号码相同，那么把开奖号码状态改为无效撤单
 		LotteryOpenCode lotteryOpenCode = new LotteryOpenCode();
 		lotteryOpenCode.setInterfaceTime(openCode.getOpentime());
@@ -178,7 +173,7 @@ public class BoyiJob {
 
 		return added;
 	}
-	
+
 //	private static String getExpectByTime(String time) {
 //		Moment moment = new Moment().fromTime(time);
 //		int hour = moment.get("hour");
@@ -200,7 +195,7 @@ public class BoyiJob {
 		String num = String.format("%03d", Integer.valueOf(expect.substring(8)));
 		return date + "-" +num;
 	}
-	
+
 	public static String get(String urlAll) {
 		try {
 			String result = HttpClientUtil.get(urlAll, null, 5000);
