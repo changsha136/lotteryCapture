@@ -15,7 +15,7 @@ public class StartUp {
 		String[] configLocations = { "classpath:config/spring/spring-config.xml" };
 		applicationContext = new ClassPathXmlApplicationContext(configLocations);
 		ExecuteServer mExecuteServer = (ExecuteServer) applicationContext
-				.getBean("executeServer");
+		.getBean("executeServer");
 		mExecuteServer.execute();
-	}
-}
+		}
+		}

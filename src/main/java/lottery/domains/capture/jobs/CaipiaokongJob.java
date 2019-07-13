@@ -39,18 +39,18 @@
 //// 		LOTTERIES.put("bjklb", "bj5fc"); // 北京5分彩/北京快乐8
 // 		// LOTTERIES.put("jndklb", "jnd3d5fc"); // 加拿大3.5
 //
-// 		LOTTERIES.put("gdsyxw", "gd11x5"); // 广东11选5
-// 		LOTTERIES.put("jxsyxw", "jx11x5"); // 江西11选5
-// 		LOTTERIES.put("ahsyxw", "ah11x5"); // 安徽11选5
-// 		LOTTERIES.put("shsyxw", "sh11x5"); // 上海11选5
-// 		LOTTERIES.put("sdsyydj", "sd11x5"); // 山东11选5
+//// 		LOTTERIES.put("gdsyxw", "gd11x5"); // 广东11选5
+//// 		LOTTERIES.put("jxsyxw", "jx11x5"); // 江西11选5
+//// 		LOTTERIES.put("ahsyxw", "ah11x5"); // 安徽11选5
+//// 		LOTTERIES.put("shsyxw", "sh11x5"); // 上海11选5
+//// 		LOTTERIES.put("sdsyydj", "sd11x5"); // 山东11选5
 //
 //// 		LOTTERIES.put("jsks", "jsk3"); // 江苏快3
 //// 		LOTTERIES.put("gxks", "gxk3"); //广西快3
 //// 		LOTTERIES.put("bjks", "bjk3"); //北京快3
 //// 		LOTTERIES.put("hubks", "hbk3"); //湖北快3
 //// 		LOTTERIES.put("hbks", "hebk3"); //河北快3
-// 		LOTTERIES.put("ahks", "ahk3"); // 安徽快3
+//// 		LOTTERIES.put("ahks", "ahk3"); // 安徽快3
 //// 		LOTTERIES.put("shks", "shk3"); // 上海快3
 //// 		LOTTERIES.put("gsks", "gsk3"); //甘肃快3
 //// 		LOTTERIES.put("jxks", "jxk3"); //江西快3
@@ -111,6 +111,7 @@
 //
 // 	public String getResult(String name) {
 // 		String url = URL + "&name="+name+"&_=" + System.currentTimeMillis();
+// 		System.out.println(url);
 // 		String charset = "UTF-8";
 // 		String result = get(url, charset);
 // 		return result;
